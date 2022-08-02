@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="~" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="viewport"
+      content="initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <style>
+      body {
+        margin: 0;
+        background-color: black;
+        background-attachment: fixed;
+        overflow-y: hidden; /* Hide vertical scrollbar */
+        overflow-x: hidden; /* Hide horizontal scrollbar */
+      }
+
+      canvas {
+        margin: 0px 0px 1px 0px;
+        margin-top: 0;
+        height: 100%;
+        width: 100%;
+      }
+
+      .loading-screen {
+        margin: 0;
+        background-color: black;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        background-attachment: fixed;
+
+        -webkit-animation-fill-mode: forwards;
+        -moz-animation-fill-mode: forwards;
+        -o-animation-fill-mode: forwards;
+        animation-fill-mode: forwards;
+      }
+
+      .incorrect-orientation {
+        margin: 0;
+        background-color: rgb(0, 0, 0);
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        background-attachment: fixed;
+        visibility: hidden;
+      }
+
+      #incorrect_icon {
+        left: 50%;
+        top: 50%;
+        position: absolute;
+        transform: translate(-50%, -50%);
+      }
+
+      #logo {
+        left: 50%;
+        top: 33%;
+        position: absolute;
+        transform: translate(-50%, -50%);
+      }
+
+      #btn {
+        left: 50%;
+        top: 70%;
+        position: absolute;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .anim-hide {
+        animation: anim-in 0.5s ease-in forwards;
+      }
+
+      @keyframes anim-in {
+        0% {
+        }
+
+        1% {
+          opacity: 1;
+        }
+
+        100% {
+          visibility: hidden;
+          opacity: 0;
+        }
+      }
+
+      .anim-show {
+        animation: anim-out 1s ease-out forwards;
+      }
+
+      @keyframes anim-out {
+        0% {
+        }
+
+        1% {
+          opacity: 0;
+        }
+
+        100% {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="left-side"></div>
+    <div class="right-side"></div>
+    <div class="loading-screen">
+      <img src="images/logo.png" alt="LOGO" id="logo" />
+      <img
+        src="images/start.png"
+        onclick="hideLoadingScreen(); this.onclick=null;"
+        alt="Start"
+        id="btn"
+      />
+    </div>
+
+    <div class="incorrect-orientation">
+      <img src="images/orientation.png" alt="Incorrect" id="incorrect_icon" />
+    </div>
+
+    <div class="overlay"></div>
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-QTE1NMM9MQ"></script>
+  <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-QTE1NMM9MQ');
+  </script> -->
+
+    <script>
+      var EventTarget = function () {
+        this.listeners = {};
+      };
+
+      EventTarget.prototype.listeners = null;
+      EventTarget.prototype.addEventListener = function (type, callback) {
+        if (!(type in this.listeners)) {
+          this.listeners[type] = [];
+        }
+        this.listeners[type].push(callback);
+      };
+
+      EventTarget.prototype.removeEventListener = function (type, callback) {
+        if (!(type in this.listeners)) {
+          return;
+        }
+        var stack = this.listeners[type];
+        for (var i = 0, l = stack.length; i < l; i++) {
+          if (stack[i] === callback) {
+            stack.splice(i, 1);
+            return;
+          }
+        }
+      };
+
+      EventTarget.prototype.dispatchEvent = function (event) {
+        if (!(event.type in this.listeners)) {
+          return true;
+        }
+        var stack = this.listeners[event.type].slice();
+
+        for (var i = 0, l = stack.length; i < l; i++) {
+          stack[i].call(this, event);
+        }
+        return !event.defaultPrevented;
+      };
+
+      (function () {
+        if (typeof window.CustomEvent === 'function') return false; //If not IE
+
+        function CustomEvent(event, params) {
+          params = params || {
+            bubbles: false,
+            cancelable: false,
+            detail: undefined,
+          };
+          var evt = document.createEvent('CustomEvent');
+          evt.initCustomEvent(
+            event,
+            params.bubbles,
+            params.cancelable,
+            params.detail
+          );
+          return evt;
+        }
+
+        CustomEvent.prototype = window.Event.prototype;
+
+        window.CustomEvent = CustomEvent;
+      })();
+
+      var onStarted = new CustomEvent('onStarted');
+
+      function hideLoadingScreen() {
+        document
+          .getElementsByClassName('loading-screen')[0]
+          .classList.add('anim-hide');
+
+        window.dispatchEvent(onStarted);
+      }
+
+      hideLoadingScreen();
+
+      //     window.addEventListener('load', function() {
+      //       window["GD_OPTIONS"] = {
+      // "gameId": "[YOUR GD GAME ID HERE]",
+      // "onEvent": function(event) {
+      //     switch (event.name) {
+      //         case "SDK_GAME_START":
+      //             // advertisement done, resume game logic and unmute audio
+      //             break;
+      //         case "SDK_GAME_PAUSE":
+      //             // pause game logic / mute audio
+      //             break;
+      //         case "SDK_GDPR_TRACKING":
+      //             // this event is triggered when your user doesn't want to be tracked
+      //             break;
+      //         case "SDK_GDPR_TARGETING":
+      //             // this event is triggered when your user doesn't want personalised targeting of ads and such
+      //             break;
+      //     }
+      // },
+      // };
+      // (function(d, s, id) {
+      //     var js, fjs = d.getElementsByTagName(s)[0];
+      //     if (d.getElementById(id)) return;
+      //     js = d.createElement(s);
+      //     js.id = id;
+      //     js.src = 'https://html5.api.gamedistribution.com/main.min.js';
+      //     fjs.parentNode.insertBefore(js, fjs);
+      // }(document, 'script', 'gamedistribution-jssdk'));
+
+      // if (typeof gdsdk !== 'undefined' && gdsdk.showAd !== 'undefined') {
+      //      gdsdk.showAd();
+      // }
+      // })
+
+      if (window.innerHeight > window.innerWidth) {
+        document.getElementsByClassName(
+          'incorrect-orientation'
+        )[0].style.visibility = 'hidden';
+      }
+
+      window.addEventListener('onLoadProgress', function (e) {});
+
+      window.addEventListener('onFittedGame', function () {
+        const btn = document.getElementById('btn');
+        btn.classList.add('anim-show');
+        btn.style.pointerEvents = 'all';
+
+        var canvas = document.getElementById('phaser_3_template');
+      });
+    </script>
+  </body>
+</html>

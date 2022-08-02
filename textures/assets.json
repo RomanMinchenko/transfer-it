@@ -1,0 +1,41 @@
+{
+	"textures": [
+		{
+			"image": "assets_0.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 302,
+				"h": 259
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "crab.png",
+					"rotated": false,
+					"trimmed": false,
+					"sourceSize": {
+						"w": 300,
+						"h": 257
+					},
+					"spriteSourceSize": {
+						"x": 0,
+						"y": 0,
+						"w": 300,
+						"h": 257
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 300,
+						"h": 257
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:1182c0c51a2a763f0c8cbba9108e88ed:94440275d8909c4f85defdfc23ac0940:4ae18d1cdffb42156b4cdabd1583863c$"
+	}
+}
